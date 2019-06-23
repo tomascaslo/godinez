@@ -1,3 +1,3 @@
-module github.com/tomascaslo/eme
+module github.com/tomascaslo/godinez
 
 go 1.12
