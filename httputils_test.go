@@ -18,7 +18,7 @@ func TestServerError(t *testing.T) {
 	rr := httptest.NewRecorder()
 	err := errors.New("Error")
 
-	serverError(errorLog, rr, err)
+	ServerError(errorLog, rr, err)
 
 	expectedStatus := http.StatusInternalServerError
 	if rr.Code != expectedStatus {
@@ -36,7 +36,7 @@ func TestClientError(t *testing.T) {
 	rr := httptest.NewRecorder()
 	expectedStatus := http.StatusBadRequest
 
-	clientError(rr, expectedStatus)
+	ClientError(rr, expectedStatus)
 
 	if rr.Code != expectedStatus {
 		t.Errorf("Expected %q got %q", rr.Body, expectedStatus)
@@ -53,7 +53,7 @@ func TestNotFound(t *testing.T) {
 	rr := httptest.NewRecorder()
 	expectedStatus := http.StatusNotFound
 
-	clientError(rr, expectedStatus)
+	ClientError(rr, expectedStatus)
 
 	if rr.Code != expectedStatus {
 		t.Errorf("Expected %q got %q", rr.Body, expectedStatus)
@@ -237,7 +237,7 @@ func TestAddDefaultData(t *testing.T) {
 			tt.app.spy = spy
 			tt.td.spy = spy
 
-			addDefaultData(tt.app, tt.td, tt.req)
+			AddDefaultData(tt.app, tt.td, tt.req)
 
 			if !reflect.DeepEqual(spy.calls, tt.expectedCalls) {
 				t.Errorf("Expected calls %v got %v", tt.expectedCalls, spy.calls)
@@ -288,7 +288,7 @@ func TestRender(t *testing.T) {
 			tt.app.spy = spy
 			tt.td.spy = spy
 
-			render(tt.app, tt.td, tt.rr, tt.req, tt.templName)
+			Render(tt.app, tt.td, tt.rr, tt.req, tt.templName)
 
 			actualStatusText := strings.TrimSuffix(tt.rr.Body.String(), "\n")
 			if actualStatusText != tt.expected {
