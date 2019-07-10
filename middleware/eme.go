@@ -1,6 +1,6 @@
 // Package eme helps handle middleware in a more human-readable
 // and friendly manner.
-package eme
+package middleware
 
 import (
 	"net/http"

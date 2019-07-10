@@ -1,0 +1,6 @@
+github.com/golangcollege/sessions v1.1.0 h1:wkTBuIJ5NqqHAj2bPpCUxK28oLZEu537NlofNCBGl1A=
+github.com/golangcollege/sessions v1.1.0/go.mod h1:GUMCGpbWAORG3ZJJe8oIE5RwS90sNVY4yXztM9xoviY=
+github.com/justinas/nosurf v0.0.0-20190416172904-05988550ea18 h1:ci3v0mUqcCewO25ntt7hprt2ZMNA0AWI6s6qV0rSpc0=
+github.com/justinas/nosurf v0.0.0-20190416172904-05988550ea18/go.mod h1:Aucr5I5chr4OCuuVB4LTuHVrKHBuyRSo7vM2hqrcb7E=
+golang.org/x/crypto v0.0.0-20181009213950-7c1a557ab941 h1:qBTHLajHecfu+xzRI9PqVDcqx7SdHj9d4B+EzSn3tAc=
+golang.org/x/crypto v0.0.0-20181009213950-7c1a557ab941/go.mod h1:6SG95UA2DQfeDnfUPMdvaQW0Q7yPrPDi9nlGo2tz2b4=
