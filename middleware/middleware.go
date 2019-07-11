@@ -15,6 +15,7 @@ type logHolder interface {
 
 type applicationAuthenticator interface {
 	isAuthenticated(*http.Request) bool
+	getRedirectTo() string
 }
 
 func SecureHeaders(next http.Handler) http.Handler {
@@ -57,8 +58,8 @@ func RequireAuthentication(app applicationAuthenticator) func(next http.Handler)
 	return func(next http.Handler) http.Handler {
 		fn := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			if !app.isAuthenticated(r) {
-				redirectTo := fmt.Sprintf("/user/login?redirect=%s", r.RequestURI)
-				http.Redirect(w, r, redirectTo, http.StatusFound)
+				fmt.Println("Testing redirect")
+				http.Redirect(w, r, app.getRedirectTo(), http.StatusFound)
 				return
 			}
 			next.ServeHTTP(w, r)

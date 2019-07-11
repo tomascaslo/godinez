@@ -62,10 +62,17 @@ func (mlh *mockLogHolder) getErrorLogger() *log.Logger {
 	return mlh.errorLog
 }
 
-type mockApplicationAuthenticator struct{}
+type mockApplicationAuthenticator struct{
+	isAuth bool
+	redirectTo string
+}
 
 func (maa *mockApplicationAuthenticator) isAuthenticated(r *http.Request) bool {
-	return false
+	return maa.isAuth
+}
+
+func (maa *mockApplicationAuthenticator) getRedirectTo() string {
+	return maa.redirectTo
 }
 
 func TestLogRequest(t *testing.T) {
@@ -118,3 +125,99 @@ func TestRecoverPanic(t *testing.T) {
 		t.Errorf("Expected %q got %q", expected, actual)
 	}
 }
+
+func TestRequireAuthentication(t *testing.T) {
+	tests := []struct{
+		name string
+		rr *httptest.ResponseRecorder
+		req *http.Request
+		app *mockApplicationAuthenticator
+		expectedLocation string
+		expectedStatusCode int
+	} {
+		{
+			"Is not authenticated",
+			httptest.NewRecorder(),
+			httptest.NewRequest("GET", "/", nil),
+			&mockApplicationAuthenticator{isAuth: false, redirectTo: "/"},
+			"/",
+			http.StatusFound,
+		},
+		{
+			"Is authenticated",
+			httptest.NewRecorder(),
+			httptest.NewRequest("GET", "/secured", nil),
+			&mockApplicationAuthenticator{isAuth: true},
+			"",
+			http.StatusOK,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			next := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				w.Write([]byte("Hello"))
+			})
+
+			requireAuthenticationMiddleware := RequireAuthentication(tt.app)
+			requireAuthenticationHandler := requireAuthenticationMiddleware(next)
+
+			requireAuthenticationHandler.ServeHTTP(tt.rr, tt.req)
+
+			rs := tt.rr.Result()
+
+			if rs.StatusCode != tt.expectedStatusCode {
+				t.Errorf("Expected %d got %d", tt.expectedStatusCode, rs.StatusCode)
+			}
+
+			actual := rs.Header.Get("Location")
+			if actual != tt.expectedLocation {
+				t.Errorf("Expected %q got %q", tt.expectedLocation, actual)
+			}
+		})
+	}
+}
+
+func TestNoSurf(t *testing.T) {
+	rr := httptest.NewRecorder()
+	req := httptest.NewRequest("GET", "/", nil)
+	next := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Write([]byte("Hello"))
+	})
+
+	csrfHandler := NoSurf(next)
+	csrfHandler.ServeHTTP(rr, req)
+
+	rs := rr.Result()
+
+	cookies := rs.Cookies()
+
+	CSRFTokenCookie := getCookie(cookies, "csrf_token")
+
+	if CSRFTokenCookie == nil {
+		t.Error("csrf_token cookie is not set")
+	}
+
+	if CSRFTokenCookie.Path != "/" {
+		t.Errorf("Expected %q got %q", "/", CSRFTokenCookie.Path)
+	}
+
+	if CSRFTokenCookie.HttpOnly != true {
+		t.Errorf("Expected %t got %t", true, CSRFTokenCookie.HttpOnly)
+	}
+
+	if CSRFTokenCookie.Secure != true {
+		t.Errorf("Expected %t got %t", true, CSRFTokenCookie.Secure)
+	}
+}
+
+func getCookie(cookies []*http.Cookie, name string) *http.Cookie {
+	for _, cookie := range cookies {
+		if cookie.Name == name {
+			return cookie
+		}
+	}
+	return nil
+}
+
+
