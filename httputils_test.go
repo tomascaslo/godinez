@@ -83,7 +83,7 @@ func (ma *mockApplication) checkAndAddCall(funcName string) {
 	ma.spy.addCall(funcName)
 }
 
-func (ma *mockApplication) getErrorLog() *log.Logger {
+func (ma *mockApplication) GetErrorLog() *log.Logger {
 	ma.checkAndAddCall("getErrorLog")
 
 	if errorLog, ok := ma.funcReturnValues["getErrorLog"].(*log.Logger); ok {
@@ -93,12 +93,12 @@ func (ma *mockApplication) getErrorLog() *log.Logger {
 	return nil
 }
 
-func (ma *mockApplication) getSession() *sessions.Session {
+func (ma *mockApplication) GetSession() *sessions.Session {
 	ma.checkAndAddCall("getSession")
 	return nil
 }
 
-func (ma *mockApplication) getTemplateCache(string) (*template.Template, error) {
+func (ma *mockApplication) GetTemplateCache(string) (*template.Template, error) {
 	ma.checkAndAddCall("getTemplateCache")
 
 	if templ, ok := ma.funcReturnValues["getTemplateCache"].(*template.Template); ok {
@@ -114,7 +114,7 @@ func (ma *mockApplication) getTemplateCache(string) (*template.Template, error) 
 	return nil, nil
 }
 
-func (ma *mockApplication) isAuthenticated(*http.Request) bool {
+func (ma *mockApplication) IsAuthenticated(*http.Request) bool {
 	ma.checkAndAddCall("isAuthenticated")
 	return false
 }
@@ -128,7 +128,7 @@ func (mtd *mockTemplateData) checkAndAddCall(funcName string) {
 	mtd.spy.addCall(funcName)
 }
 
-func (mtd *mockTemplateData) enableCSRFToken() bool {
+func (mtd *mockTemplateData) EnableCSRFToken() bool {
 	mtd.checkAndAddCall("enableCSRFToken")
 
 	if returnValue, ok := mtd.funcReturnValues["enableCSRFToken"].(bool); ok {
@@ -138,7 +138,7 @@ func (mtd *mockTemplateData) enableCSRFToken() bool {
 	return false
 }
 
-func (mtd *mockTemplateData) enableCurrentYear() bool {
+func (mtd *mockTemplateData) EnableCurrentYear() bool {
 	mtd.checkAndAddCall("enableCurrentYear")
 
 	if returnValue, ok := mtd.funcReturnValues["enableCurrentYear"].(bool); ok {
@@ -148,7 +148,7 @@ func (mtd *mockTemplateData) enableCurrentYear() bool {
 	return false
 }
 
-func (mtd *mockTemplateData) enableAuthentication() bool {
+func (mtd *mockTemplateData) EnableAuthentication() bool {
 	mtd.checkAndAddCall("enableAuthentication")
 
 	if returnValue, ok := mtd.funcReturnValues["enableAuthentication"].(bool); ok {
@@ -158,7 +158,7 @@ func (mtd *mockTemplateData) enableAuthentication() bool {
 	return false
 }
 
-func (mtd *mockTemplateData) getTemplateData() interface{} {
+func (mtd *mockTemplateData) GetTemplateData() interface{} {
 	mtd.checkAndAddCall("getTemplateData")
 
 	if templData, ok := mtd.funcReturnValues["getTemplateData"].(struct{ Data string }); ok {
@@ -168,30 +168,30 @@ func (mtd *mockTemplateData) getTemplateData() interface{} {
 	return nil
 }
 
-func (mtd *mockTemplateData) getCSRFToken() string {
+func (mtd *mockTemplateData) GetCSRFToken() string {
 	mtd.checkAndAddCall("getCSRFToken")
 	return ""
 }
 
-func (mtd *mockTemplateData) getCurrentYear() int {
+func (mtd *mockTemplateData) GetCurrentYear() int {
 	mtd.checkAndAddCall("getCurrentYear")
 	return 0
 }
 
-func (mtd *mockTemplateData) getIsAuthenticated() bool {
+func (mtd *mockTemplateData) GetIsAuthenticated() bool {
 	mtd.checkAndAddCall("getIsAuthenticated")
 	return false
 }
 
-func (mtd *mockTemplateData) setCSRFToken(string) {
+func (mtd *mockTemplateData) SetCSRFToken(string) {
 	mtd.checkAndAddCall("setCSRFToken")
 }
 
-func (mtd *mockTemplateData) setCurrentYear(int) {
+func (mtd *mockTemplateData) SetCurrentYear(int) {
 	mtd.checkAndAddCall("setCurrentYear")
 }
 
-func (mtd *mockTemplateData) setIsAuthenticated(bool) {
+func (mtd *mockTemplateData) SetIsAuthenticated(bool) {
 	mtd.checkAndAddCall("setIsAuthenticated")
 }
 

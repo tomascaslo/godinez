@@ -19,23 +19,23 @@ type contextKey string
 var ContextKeyIsAuthenticated = contextKey("isAuthenticated")
 
 type application interface {
-	getErrorLog() *log.Logger
-	getSession() *sessions.Session
-	getTemplateCache(string) (*template.Template, error)
-	isAuthenticated(*http.Request) bool
+	GetErrorLog() *log.Logger
+	GetSession() *sessions.Session
+	GetTemplateCache(string) (*template.Template, error)
+	IsAuthenticated(*http.Request) bool
 }
 
 type templateData interface {
-	enableCSRFToken() bool
-	enableCurrentYear() bool
-	enableAuthentication() bool
-	getTemplateData() interface{}
-	getCSRFToken() string
-	getCurrentYear() int
-	getIsAuthenticated() bool
-	setCSRFToken(string)
-	setCurrentYear(int)
-	setIsAuthenticated(bool)
+	EnableCSRFToken() bool
+	EnableCurrentYear() bool
+	EnableAuthentication() bool
+	GetTemplateData() interface{}
+	GetCSRFToken() string
+	GetCurrentYear() int
+	GetIsAuthenticated() bool
+	SetCSRFToken(string)
+	SetCurrentYear(int)
+	SetIsAuthenticated(bool)
 }
 
 func ServerError(errorLog *log.Logger, w http.ResponseWriter, err error) {
@@ -54,30 +54,30 @@ func NotFound(w http.ResponseWriter) {
 }
 
 func AddDefaultData(app application, td templateData, r *http.Request) {
-	if td.enableCSRFToken() {
-		td.setCSRFToken(nosurf.Token(r))
+	if td.EnableCSRFToken() {
+		td.SetCSRFToken(nosurf.Token(r))
 	}
-	if td.enableCurrentYear() {
-		td.setCurrentYear(time.Now().Year())
+	if td.EnableCurrentYear() {
+		td.SetCurrentYear(time.Now().Year())
 	}
-	if td.enableAuthentication() {
-		td.setIsAuthenticated(app.isAuthenticated(r))
+	if td.EnableAuthentication() {
+		td.SetIsAuthenticated(app.IsAuthenticated(r))
 	}
 }
 
 func Render(app application, td templateData, w http.ResponseWriter, r *http.Request, name string) {
-	ts, err := app.getTemplateCache(name)
+	ts, err := app.GetTemplateCache(name)
 	if err != nil {
-		ServerError(app.getErrorLog(), w, fmt.Errorf("The template %s does not exist", name))
+		ServerError(app.GetErrorLog(), w, fmt.Errorf("The template %s does not exist", name))
 		return
 	}
 
 	buf := new(bytes.Buffer)
 
-	err = ts.Execute(buf, td.getTemplateData())
+	err = ts.Execute(buf, td.GetTemplateData())
 	if err != nil {
 		fmt.Println("There was an error")
-		ServerError(app.getErrorLog(), w, err)
+		ServerError(app.GetErrorLog(), w, err)
 	}
 
 	buf.WriteTo(w)
