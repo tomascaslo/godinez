@@ -49,8 +49,8 @@ func TestSecureHeaders(t *testing.T) {
 	}
 }
 
-type mockLogHolder struct{
-	infoLog *log.Logger
+type mockLogHolder struct {
+	infoLog  *log.Logger
 	errorLog *log.Logger
 }
 
@@ -62,8 +62,8 @@ func (mlh *mockLogHolder) getErrorLogger() *log.Logger {
 	return mlh.errorLog
 }
 
-type mockApplicationAuthenticator struct{
-	isAuth bool
+type mockApplicationAuthenticator struct {
+	isAuth     bool
 	redirectTo string
 }
 
@@ -127,14 +127,14 @@ func TestRecoverPanic(t *testing.T) {
 }
 
 func TestRequireAuthentication(t *testing.T) {
-	tests := []struct{
-		name string
-		rr *httptest.ResponseRecorder
-		req *http.Request
-		app *mockApplicationAuthenticator
-		expectedLocation string
+	tests := []struct {
+		name               string
+		rr                 *httptest.ResponseRecorder
+		req                *http.Request
+		app                *mockApplicationAuthenticator
+		expectedLocation   string
 		expectedStatusCode int
-	} {
+	}{
 		{
 			"Is not authenticated",
 			httptest.NewRecorder(),
@@ -219,5 +219,3 @@ func getCookie(cookies []*http.Cookie, name string) *http.Cookie {
 	}
 	return nil
 }
-
-
