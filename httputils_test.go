@@ -272,6 +272,15 @@ func TestRender(t *testing.T) {
 			`<html><head></head><body>Hello World!</body>`,
 		},
 		{
+			"Render with template data nil",
+			&mockApplication{funcReturnValues: map[string]interface{}{"getTemplateCache": templ}},
+			&mockTemplateData{funcReturnValues: map[string]interface{}{"getTemplateData": nil}},
+			httptest.NewRecorder(),
+			req,
+			"",
+			`<html><head></head><body></body>`,
+		},
+		{
 			"Template error",
 			&mockApplication{funcReturnValues: map[string]interface{}{"getTemplateCache": nil, "getErrorLog": log.New(ioutil.Discard, "", 0)}},
 			&mockTemplateData{},

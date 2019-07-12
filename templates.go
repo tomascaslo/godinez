@@ -40,11 +40,25 @@ func NewTemplateCache(dir string) (map[string]*template.Template, error) {
 			return nil, err
 		}
 
-		ts, err = ts.ParseGlob(filepath.Join(dir, "*.layout.tmpl"))
+		// Need to check if there are layout files first
+		globFilepath := filepath.Join(dir, "*.layout.tmpl")
+		matches, err := filepath.Glob(globFilepath)
 		if err != nil {
 			return nil, err
 		}
+		if matches != nil && len(matches) != 0 {
+			ts, err = ts.ParseGlob(filepath.Join(dir, "*.layout.tmpl"))
+			if err != nil {
+				return nil, err
+			}
+		}
 
+		// Need to check if there are partial files first
+		globFilepath = filepath.Join(dir, "*.partial.tmpl")
+		matches, err = filepath.Glob(globFilepath)
+		if err != nil {
+			return nil, err
+		}
 		ts, err = ts.ParseGlob(filepath.Join(dir, "*.partial.tmpl"))
 		if err != nil {
 			return nil, err
