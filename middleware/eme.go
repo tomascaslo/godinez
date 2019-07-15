@@ -18,18 +18,24 @@ func NewEme(mws ...Mw) *Eme {
 	return &Eme{append([]Mw{}, mws...)}
 }
 
-// Apply runs middleware and returns the http.HandlerFunc
+// ApplyFunc runs middleware with a function and returns the http.HandlerFunc
 // by calling do().
-func (e *Eme) Apply(f func(w http.ResponseWriter, r *http.Request)) http.Handler {
-	return do(f, e.mws...)
+func (e *Eme) ApplyFunc(f func(w http.ResponseWriter, r *http.Request)) http.Handler {
+	hf := http.HandlerFunc(f)
+	return do(hf, e.mws...)
+}
+
+// Apply runs middleware with a handler function and returns the http.HandlerFunc
+// by calling do().
+func (e *Eme) Apply(hf http.HandlerFunc) http.Handler {
+	return do(hf, e.mws...)
 }
 
 // Do applies middlewares mws to the given function f.
 // Middlewares are applied from left to right, in order.
 // If no middlewares are passed http.HandlerFunc(f) is returned.
 // Use do(func(http.ResponseWriter, *http.Request), mw1, mw2, mw3...)
-func do(f func(http.ResponseWriter, *http.Request), mws ...Mw) http.Handler {
-	hf := http.HandlerFunc(f)
+func do(hf http.Handler, mws ...Mw) http.Handler {
 	if len(mws) < 1 {
 		return hf
 	}
