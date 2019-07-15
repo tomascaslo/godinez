@@ -54,11 +54,11 @@ type mockLogHolder struct {
 	errorLog *log.Logger
 }
 
-func (mlh *mockLogHolder) getInfoLogger() *log.Logger {
+func (mlh *mockLogHolder) GetInfoLogger() *log.Logger {
 	return mlh.infoLog
 }
 
-func (mlh *mockLogHolder) getErrorLogger() *log.Logger {
+func (mlh *mockLogHolder) GetErrorLogger() *log.Logger {
 	return mlh.errorLog
 }
 
@@ -67,11 +67,11 @@ type mockApplicationAuthenticator struct {
 	redirectTo string
 }
 
-func (maa *mockApplicationAuthenticator) isAuthenticated(r *http.Request) bool {
+func (maa *mockApplicationAuthenticator) IsAuthenticated(r *http.Request) bool {
 	return maa.isAuth
 }
 
-func (maa *mockApplicationAuthenticator) getRedirectTo() string {
+func (maa *mockApplicationAuthenticator) GetRedirectTo() string {
 	return maa.redirectTo
 }
 

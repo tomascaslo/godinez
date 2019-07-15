@@ -9,13 +9,13 @@ import (
 )
 
 type logHolder interface {
-	getInfoLogger() *log.Logger
-	getErrorLogger() *log.Logger
+	GetInfoLogger() *log.Logger
+	GetErrorLogger() *log.Logger
 }
 
 type applicationAuthenticator interface {
-	isAuthenticated(*http.Request) bool
-	getRedirectTo() string
+	IsAuthenticated(*http.Request) bool
+	GetRedirectTo() string
 }
 
 func SecureHeaders(next http.Handler) http.Handler {
@@ -30,7 +30,7 @@ func SecureHeaders(next http.Handler) http.Handler {
 func LogRequest(lh logHolder) func(next http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		fn := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			lh.getInfoLogger().Printf("%s - %s %s %s", r.RemoteAddr, r.Proto, r.Method, r.URL.RequestURI())
+			lh.GetInfoLogger().Printf("%s - %s %s %s", r.RemoteAddr, r.Proto, r.Method, r.URL.RequestURI())
 
 			next.ServeHTTP(w, r)
 		})
@@ -44,7 +44,7 @@ func RecoverPanic(lh logHolder) func(next http.Handler) http.Handler {
 			defer func() {
 				if err := recover(); err != nil {
 					w.Header().Set("Connection", "close")
-					godinez.ServerError(lh.getErrorLogger(), w, fmt.Errorf("%s", err))
+					godinez.ServerError(lh.GetErrorLogger(), w, fmt.Errorf("%s", err))
 				}
 			}()
 			next.ServeHTTP(w, r)
@@ -57,9 +57,9 @@ func RecoverPanic(lh logHolder) func(next http.Handler) http.Handler {
 func RequireAuthentication(app applicationAuthenticator) func(next http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		fn := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			if !app.isAuthenticated(r) {
+			if !app.IsAuthenticated(r) {
 				fmt.Println("Testing redirect")
-				http.Redirect(w, r, app.getRedirectTo(), http.StatusFound)
+				http.Redirect(w, r, app.GetRedirectTo(), http.StatusFound)
 				return
 			}
 			next.ServeHTTP(w, r)
