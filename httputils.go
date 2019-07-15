@@ -19,7 +19,7 @@ type contextKey string
 var ContextKeyIsAuthenticated = contextKey("isAuthenticated")
 
 type application interface {
-	GetErrorLog() *log.Logger
+	GetErrorLogger() *log.Logger
 	GetSession() *sessions.Session
 	GetTemplateCache(string) (*template.Template, error)
 	IsAuthenticated(*http.Request) bool
@@ -70,7 +70,7 @@ func AddDefaultData(app application, td templateData, r *http.Request) {
 func Render(app application, td templateData, w http.ResponseWriter, r *http.Request, name string) {
 	ts, err := app.GetTemplateCache(name)
 	if err != nil {
-		ServerError(app.GetErrorLog(), w, fmt.Errorf("The template %s does not exist", name))
+		ServerError(app.GetErrorLogger(), w, fmt.Errorf("The template %s does not exist", name))
 		return
 	}
 
@@ -79,7 +79,7 @@ func Render(app application, td templateData, w http.ResponseWriter, r *http.Req
 	err = ts.Execute(buf, td.GetTemplateData())
 	if err != nil {
 		fmt.Println("There was an error")
-		ServerError(app.GetErrorLog(), w, err)
+		ServerError(app.GetErrorLogger(), w, err)
 	}
 
 	buf.WriteTo(w)

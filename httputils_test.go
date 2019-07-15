@@ -83,7 +83,7 @@ func (ma *mockApplication) checkAndAddCall(funcName string) {
 	ma.spy.addCall(funcName)
 }
 
-func (ma *mockApplication) GetErrorLog() *log.Logger {
+func (ma *mockApplication) GetErrorLogger() *log.Logger {
 	ma.checkAndAddCall("getErrorLog")
 
 	if errorLog, ok := ma.funcReturnValues["getErrorLog"].(*log.Logger); ok {
