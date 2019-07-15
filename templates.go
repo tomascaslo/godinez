@@ -8,7 +8,7 @@ import (
 
 type TemplateData struct {
 	CSRFToken       string // Used to add CSRFToken to template
-	CurrentYear     int // The current year e.g. 2019
+	CurrentYear     int    // The current year e.g. 2019
 	Flash           string // Flash message to show on website
 	IsAuthenticated bool
 }

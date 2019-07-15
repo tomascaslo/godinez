@@ -7,30 +7,46 @@ import (
 	"testing"
 )
 
-func TestEmeCallsAllMiddlewares(t *testing.T) {
+func TestEme(t *testing.T) {
 	b := new(bytes.Buffer)
 	f := func(w http.ResponseWriter, r *http.Request) {}
 	m := func(f http.Handler) http.Handler {
 		fmt.Fprint(b, "m")
 		return f
 	}
-
-	Eme(f, m, m, m)
-
-	expected := "mmm"
-	actual := b.String()
-	if actual != expected {
-		t.Errorf("Expected %q to be %q", actual, expected)
+	tests := []struct {
+		name           string
+		mws            []Mw
+		expectedResult string
+	}{
+		{
+			"Calls all middlewares",
+			[]Mw{m, m, m},
+			"mmm",
+		},
+		{
+			"Returns HandlerFunc in no middleware",
+			[]Mw{},
+			"",
+		},
 	}
-}
 
-func TestEmeWithNoMiddlewaresReturnsHandler(t *testing.T) {
-	f := func(w http.ResponseWriter, r *http.Request) {}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
 
-	actual := fmt.Sprintf("%v", Eme(f))
-	expected := fmt.Sprintf("%v", http.HandlerFunc(f))
+			h := NewEme(tt.mws...).Apply(f)
 
-	if actual != expected {
-		t.Errorf("Expected %s to be %s", actual, expected)
+			if b.String() != tt.expectedResult {
+				t.Errorf("Expected %q got %q", tt.expectedResult, b.String())
+			}
+
+			// Testing that the handler function is getting returned
+			actual := fmt.Sprintf("%v", h)
+			expected := fmt.Sprintf("%v", http.HandlerFunc(f))
+			if actual != expected {
+				t.Errorf("Expected %s to be %s", actual, expected)
+			}
+			b.Reset()
+		})
 	}
 }

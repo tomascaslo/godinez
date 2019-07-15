@@ -25,6 +25,8 @@ type application interface {
 	IsAuthenticated(*http.Request) bool
 }
 
+// TODO: Refactor this to more specific behaviors so that
+// 	there is no need to implement the whole interface.
 type templateData interface {
 	EnableCSRFToken() bool
 	EnableCurrentYear() bool
