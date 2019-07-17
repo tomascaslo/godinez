@@ -27,7 +27,7 @@ func (e *Eme) ApplyFunc(f func(w http.ResponseWriter, r *http.Request)) http.Han
 
 // Apply runs middleware with a handler function and returns the http.HandlerFunc
 // by calling do().
-func (e *Eme) Apply(hf http.HandlerFunc) http.Handler {
+func (e *Eme) Apply(hf http.Handler) http.Handler {
 	return do(hf, e.mws...)
 }
 
