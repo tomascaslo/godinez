@@ -39,10 +39,10 @@ func do(hf http.Handler, mws ...Mw) http.Handler {
 	if len(mws) < 1 {
 		return hf
 	}
-	var h http.Handler
-	for _, m := range mws {
-		h = m(hf)
+	for i := range mws {
+		// Calling middleware functions in order
+		hf = mws[len(mws)-1-i](hf)
 	}
 
-	return h
+	return hf
 }

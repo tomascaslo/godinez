@@ -10,10 +10,14 @@ import (
 func TestEmeApply(t *testing.T) {
 	b := new(bytes.Buffer)
 	hf := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {})
-	m := func(f http.Handler) http.Handler {
-		fmt.Fprint(b, "m")
-		return f
+	customMiddleware := func(l string) func(http.Handler) http.Handler {
+		return func(f http.Handler) http.Handler {
+			fmt.Fprint(b, l)
+			return f
+		}
 	}
+	m := customMiddleware("m")
+	n := customMiddleware("n")
 	tests := []struct {
 		name           string
 		mws            []Mw
@@ -21,8 +25,8 @@ func TestEmeApply(t *testing.T) {
 	}{
 		{
 			"Calls all middlewares",
-			[]Mw{m, m, m},
-			"mmm",
+			[]Mw{m, n, m, n},
+			"nmnm",
 		},
 		{
 			"Returns HandlerFunc in no middleware",
